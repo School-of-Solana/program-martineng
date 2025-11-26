@@ -1,0 +1,1283 @@
+{
+  "address": "5BWRzdnfyupL8h4MpdHVgZT5bibUeLq85qrDUsu7QVmZ",
+  "metadata": {
+    "name": "mvote",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "close_poll",
+      "docs": [
+        "Close a poll (creator only)"
+      ],
+      "discriminator": [
+        139,
+        213,
+        162,
+        65,
+        172,
+        150,
+        123,
+        67
+      ],
+      "accounts": [
+        {
+          "name": "creator",
+          "signer": true
+        },
+        {
+          "name": "poll",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  108,
+                  108
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "poll_id"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "poll_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "create_poll",
+      "docs": [
+        "Create a new poll"
+      ],
+      "discriminator": [
+        182,
+        171,
+        112,
+        238,
+        6,
+        219,
+        14,
+        110
+      ],
+      "accounts": [
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "creator"
+              }
+            ]
+          }
+        },
+        {
+          "name": "poll",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  108,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config.total_polls_created",
+                "account": "Config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "creator_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "creator"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "question",
+          "type": "string"
+        },
+        {
+          "name": "options",
+          "type": {
+            "vec": "string"
+          }
+        },
+        {
+          "name": "vote_mode",
+          "type": {
+            "defined": {
+              "name": "VoteMode"
+            }
+          }
+        },
+        {
+          "name": "voting_style",
+          "type": {
+            "defined": {
+              "name": "VotingStyle"
+            }
+          }
+        },
+        {
+          "name": "duration_minutes",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "docs": [
+        "Initialize the mVote program with config and token mint"
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sol_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "purchase_tokens",
+      "docs": [
+        "Purchase mVote tokens with SOL"
+      ],
+      "discriminator": [
+        142,
+        1,
+        16,
+        160,
+        115,
+        120,
+        55,
+        254
+      ],
+      "accounts": [
+        {
+          "name": "buyer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "buyer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "buyer_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "buyer"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "sol_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "vote",
+      "docs": [
+        "Cast a vote on a poll"
+      ],
+      "discriminator": [
+        227,
+        110,
+        155,
+        23,
+        136,
+        126,
+        172,
+        25
+      ],
+      "accounts": [
+        {
+          "name": "voter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "voter"
+              }
+            ]
+          }
+        },
+        {
+          "name": "poll",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  108,
+                  108
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "poll_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vote_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  111,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "poll_id"
+              },
+              {
+                "kind": "account",
+                "path": "voter"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "voter_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "voter"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "poll_id",
+          "type": "u64"
+        },
+        {
+          "name": "option_index",
+          "type": "u8"
+        },
+        {
+          "name": "token_amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "Poll",
+      "discriminator": [
+        110,
+        234,
+        167,
+        188,
+        231,
+        136,
+        153,
+        111
+      ]
+    },
+    {
+      "name": "UserStats",
+      "discriminator": [
+        176,
+        223,
+        136,
+        27,
+        122,
+        79,
+        32,
+        227
+      ]
+    },
+    {
+      "name": "VoteRecord",
+      "discriminator": [
+        112,
+        9,
+        123,
+        165,
+        234,
+        9,
+        157,
+        167
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "DailyLimitExceeded",
+      "msg": "Daily purchase limit exceeded (100 mVote max)"
+    },
+    {
+      "code": 6001,
+      "name": "InsufficientFunds",
+      "msg": "Insufficient SOL balance"
+    },
+    {
+      "code": 6002,
+      "name": "InsufficientTokens",
+      "msg": "Insufficient mVote token balance"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidQuestionLength",
+      "msg": "Question must be 1-280 characters"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidOptionCount",
+      "msg": "Must have 2-4 voting options"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidOptionLength",
+      "msg": "Option text must be 1-100 characters"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidDuration",
+      "msg": "Duration must be 10-1440 minutes"
+    },
+    {
+      "code": 6007,
+      "name": "PollNotStarted",
+      "msg": "Poll has not started yet"
+    },
+    {
+      "code": 6008,
+      "name": "PollExpired",
+      "msg": "Poll has expired"
+    },
+    {
+      "code": 6009,
+      "name": "PollNotActive",
+      "msg": "Poll is not active"
+    },
+    {
+      "code": 6010,
+      "name": "AlreadyVoted",
+      "msg": "Already voted on this poll"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidOption",
+      "msg": "Invalid option index"
+    },
+    {
+      "code": 6012,
+      "name": "MinimumVoteRequired",
+      "msg": "Minimum 1 mVote required to vote"
+    },
+    {
+      "code": 6013,
+      "name": "Unauthorized",
+      "msg": "Only poll creator can perform this action"
+    },
+    {
+      "code": 6014,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6015,
+      "name": "InvalidAmount",
+      "msg": "Invalid amount"
+    }
+  ],
+  "types": [
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "docs": [
+              "Program admin"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "docs": [
+              "mVote token mint"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "sol_vault",
+            "docs": [
+              "SOL collection vault"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "sol_usd_rate",
+            "docs": [
+              "SOL/USD rate (e.g., 15000 = $150.00)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "tokens_per_usd",
+            "docs": [
+              "Tokens per USD (with decimals)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "daily_purchase_limit",
+            "docs": [
+              "Daily purchase limit (with decimals)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "poll_creation_cost",
+            "docs": [
+              "Cost to create a poll (with decimals)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "vote_cost",
+            "docs": [
+              "Cost per vote in Fair mode (with decimals)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_polls_created",
+            "docs": [
+              "Total polls created (used for poll ID)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for PDA"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Poll",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "docs": [
+              "Unique poll identifier"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "creator",
+            "docs": [
+              "Poll creator"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "question",
+            "docs": [
+              "Poll question (max 280 chars)"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "options",
+            "docs": [
+              "Voting options (2-4 options, max 100 chars each)"
+            ],
+            "type": {
+              "vec": "string"
+            }
+          },
+          {
+            "name": "vote_counts",
+            "docs": [
+              "Vote counts for each option"
+            ],
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "vote_mode",
+            "docs": [
+              "Voting mode (Fair or Holding)"
+            ],
+            "type": {
+              "defined": {
+                "name": "VoteMode"
+              }
+            }
+          },
+          {
+            "name": "voting_style",
+            "docs": [
+              "Voting style (Binary or Multiple Choice)"
+            ],
+            "type": {
+              "defined": {
+                "name": "VotingStyle"
+              }
+            }
+          },
+          {
+            "name": "start_time",
+            "docs": [
+              "Poll start time (unix timestamp)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "end_time",
+            "docs": [
+              "Poll end time (unix timestamp)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "total_votes",
+            "docs": [
+              "Total number of votes cast"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_tokens_spent",
+            "docs": [
+              "Total tokens spent on this poll"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "is_active",
+            "docs": [
+              "Whether the poll is active"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for PDA"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserStats",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "docs": [
+              "User wallet address"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "tokens_purchased_today",
+            "docs": [
+              "Tokens purchased today"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "last_purchase_day",
+            "docs": [
+              "Last purchase day (unix timestamp of day start in SGT)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "total_tokens_purchased",
+            "docs": [
+              "Total tokens ever purchased"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "polls_created",
+            "docs": [
+              "Number of polls created"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "votes_cast",
+            "docs": [
+              "Number of votes cast"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for PDA"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoteMode",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "FairVote"
+          },
+          {
+            "name": "HoldingVote"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoteRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "voter",
+            "docs": [
+              "Voter wallet address"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "poll_id",
+            "docs": [
+              "Poll ID this vote is for"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "option_index",
+            "docs": [
+              "Index of the chosen option"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "tokens_spent",
+            "docs": [
+              "Total tokens spent on this vote"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "voted_at",
+            "docs": [
+              "Timestamp when vote was cast"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for PDA"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VotingStyle",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Binary"
+          },
+          {
+            "name": "MultipleChoice"
+          }
+        ]
+      }
+    }
+  ]
+}
